@@ -2,9 +2,8 @@
 
 public static class ToDoList
 {
-    static void Main()
+    private static void Main()
     {
-
         var running = true;                                            // jump into the app immediately
         int action;                                                     // declare to avoid loop condition errors, don't assign yet
         List<string?> ToDoList = [];                    // very important to use lists because you can add/remove elements
@@ -17,12 +16,10 @@ public static class ToDoList
 
         while (running)
         {
-
             if (ToDoList.Count == 0)
             {
                 Console.Write("Write your first task to get started: ");         // need to have a first task, logical because then actions 1 and 3 don't make any sense.
                 var firstAddedTask = Console.ReadLine();                      // think of it as a startup screen
-
 
                 // prevent no input :
                 while (firstAddedTask?.Length == 0) // pressing enter without typing anything gives empty string, not null!
@@ -44,8 +41,6 @@ public static class ToDoList
             Console.WriteLine("3. Remove Task");
             Console.WriteLine("4. Quit Application");
             Console.Write("(Write 1, 2, 3 or 4): ");                // use Console.Write() here to enter the input in the same line (looks cleaner)
-
-
 
             // ensure no other input other than 1 2 3 4 can be entered
             while (!int.TryParse(Console.ReadLine(), out action) || action < 1 || action > 4)             // if input is not an integer -> asks you to input again        (the ! before the false statement makes it true)
@@ -81,7 +76,6 @@ public static class ToDoList
 
                     break;
 
-
                 case 2:  // ADD A TASK
 
                     Console.Write("Write the task you want to add: ");
@@ -106,7 +100,7 @@ public static class ToDoList
                     int displayedIndex;                 // the user inputs the index they see on screen, so 1 bigger than the program index
                                                         // declare but don't assign. We need it as a placeholder if the input is valid (see down)
 
-                    while (!int.TryParse(input, out displayedIndex) || displayedIndex < 1 || displayedIndex > ToDoList.Count)                 // if input is not an integer -> asks you to input again (the ! makes the false true, and initializes the loop) 
+                    while (!int.TryParse(input, out displayedIndex) || displayedIndex < 1 || displayedIndex > ToDoList.Count)                 // if input is not an integer -> asks you to input again (the ! makes the false true, and initializes the loop)
                     {                                                                                                                           // if input is integer -> outputs it under the name displayedIndex
                         Console.Write("Input is invalid or an element with that number does not exist (Enter a NUMBER within list range!): ");  // if displayed index < 1 or outside list range then asks to input again
                         input = Console.ReadLine();
@@ -115,10 +109,9 @@ public static class ToDoList
                     var programIndex = displayedIndex - 1;                                                                                      // program index calculated from the user inputted index, hence displayedIndex < 1
                                                                                                                                                 // means program index < 0, which is impossible
 
-
                     Console.Write($"Are you sure you want to remove task #{displayedIndex}? (Y/N): ");                                          // confirm before deleting
                     var confirmRemove = Console.ReadLine()?.ToUpper();                                                                        // with .ToUpper() even if you input "y" or "n" you still get "Y" or "Y"
-                                                                                                                                                // (case sensitive conditions)
+                                                                                                                                              // (case sensitive conditions)
                     while (confirmRemove is not "Y" and not "N")
                     {
                         Console.Write("Please enter a valid answer (Y/N): ");
@@ -147,18 +140,15 @@ public static class ToDoList
 
                     // no need for default case, because we ruled out any other inputs except 1 2 3 4
             }
-
         }
 
         Console.WriteLine("Thank you for using TO-DO list app!");
 
-
         Console.ReadKey();
     }
 
-
     // method to simulate "loading"
-    static void LoadingDots(string message = "Loading", int dots = 5, int delay = 150)  // the assigned values serve as default values
+    private static void LoadingDots(string message = "Loading", int dots = 5, int delay = 150)  // the assigned values serve as default values
     {
         Console.Write(message);
 
