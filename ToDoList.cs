@@ -2,75 +2,78 @@
 
 public static class ToDoList
 {
-    private static readonly List<string?> _toDoList = [];                    // very important to use lists because you can add/remove elements
+    private static readonly List<string?> _toDoList = [];
+
     private static void Main()
     {
-        var running = true;                                            // jump into the app immediately
-        int action;                                                     // declare to avoid loop condition errors, don't assign yet
-        SimulateLoadingDots("Loading application");
+        var isExiting = true;
+        StartupMessage();
 
-        Console.WriteLine("================ Welcome To TO-DO List application ================");
-        Console.WriteLine();                                                                              // welcome screen outside of loop, so it only shows at the start
-        Console.WriteLine();
-
-        while (running)
+        while (isExiting)
         {
-            if (_toDoList.Count == 0)
+            switch (GetAction())
             {
-                Console.Write("Write your first task to get started: ");         // need to have a first task, logical because then actions 1 and 3 don't make any sense.
-                var firstAddedTask = Console.ReadLine();                      // think of it as a startup screen
-
-                // prevent no input :
-                while (firstAddedTask?.Length == 0) // pressing enter without typing anything gives empty string, not null!
-                {
-                    Console.Write("Please type something: ");
-                    firstAddedTask = Console.ReadLine();
-                }
-
-                // added a confirmation message because it felt weird to add a task without confirmation on user side
-                _toDoList.Add(firstAddedTask);
-                Console.WriteLine($"First task successfully added!: 1. {firstAddedTask}");
-                Console.WriteLine();
-            }
-
-            Console.WriteLine("Choose an action:");
-            Console.WriteLine();                                    // empty line to make it more aesthetically pleasing
-            Console.WriteLine("1. View Tasks");
-            Console.WriteLine("2. Add Task");
-            Console.WriteLine("3. Remove Task");
-            Console.WriteLine("4. Quit Application");
-            Console.Write("(Write 1, 2, 3 or 4): ");                // use Console.Write() here to enter the input in the same line (looks cleaner)
-
-            // ensure no other input other than 1 2 3 4 can be entered
-            while (!int.TryParse(Console.ReadLine(), out action) || action < 1 || action > 4)             // if input is not an integer -> asks you to input again        (the ! before the false statement makes it true)
-            {                                                                                             // if it is integer but it's <1 or >4 -> asks you to write again
-                Console.Write("Please enter a valid input (1, 2, 3, 4): ");
-            }
-
-            Console.WriteLine();
-
-            switch (action)
-            {
-                case 1:
+                case OptionType.ShowAll:
                     HandleShowAll();
                     break;
-                case 2:
+                case OptionType.Add:
                     HandleAddTask();
                     break;
 
-                case 3:
+                case OptionType.Remove:
                     HandleRemoveTask();
                     break;
                 default:
                     SimulateLoadingDots("Shutting down application");
-                    running = false;
+                    isExiting = false;
                     break;
             }
         }
 
         Console.WriteLine("Thank you for using TO-DO list app!");
-
         Console.ReadKey();
+    }
+
+    private static void StartupMessage()
+    {
+        SimulateLoadingDots("Loading application");
+
+        Console.WriteLine("================ Welcome To TO-DO List application ================");
+        Console.WriteLine();
+        Console.WriteLine();
+
+        Console.Write("Write your first task to get started: ");
+        var firstAddedTask = Console.ReadLine();
+        while (string.IsNullOrWhiteSpace(firstAddedTask))
+        {
+            Console.Write("Please type something: ");
+            firstAddedTask = Console.ReadLine();
+        }
+
+        _toDoList.Add(firstAddedTask);
+        Console.WriteLine($"First task successfully added!: 1. {firstAddedTask}");
+        Console.WriteLine();
+    }
+
+    private static OptionType GetAction()
+    {
+        Console.WriteLine("Choose an action:");
+        Console.WriteLine();
+        Console.WriteLine("1. View Tasks");
+        Console.WriteLine("2. Add Task");
+        Console.WriteLine("3. Remove Task");
+        Console.WriteLine("4. Quit Application");
+        Console.Write("(Write 1, 2, 3 or 4): ");
+
+        while (true)
+        {
+            if (int.TryParse(Console.ReadLine(), out var index) && Enum.IsDefined(typeof(OptionType), index))
+            {
+                Console.WriteLine();
+                return (OptionType)index;
+            }
+            Console.Write("Please enter a valid input (1, 2, 3, 4): ");
+        }
     }
 
     private static void HandleShowAll()
@@ -117,8 +120,7 @@ public static class ToDoList
         Console.Write("Which task do you want to remove? (Write its number): ");
 
         var input = Console.ReadLine();
-        int displayedIndex;                 // the user inputs the index they see on screen, so 1 bigger than the program index
-                                            // declare but don't assign. We need it as a placeholder if the input is valid (see down)
+        int displayedIndex;
 
         while (!int.TryParse(input, out displayedIndex) || displayedIndex < 1 || displayedIndex > _toDoList.Count)                 // if input is not an integer -> asks you to input again (the ! makes the false true, and initializes the loop)
         {                                                                                                                           // if input is integer -> outputs it under the name displayedIndex
@@ -153,7 +155,7 @@ public static class ToDoList
     }
 
 
-    private static void SimulateLoadingDots(string message = "Loading", int dots = 5, int delay = 150)  // the assigned values serve as default values
+    private static void SimulateLoadingDots(string message = "Loading", int dots = 5, int delay = 150)
     {
         Console.Write(message);
 
